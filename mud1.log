@@ -1,0 +1,92 @@
+20140621.1827.10 info  MUD            CoffeeMud v5.8.2
+20140621.1827.10 info  MUD            (C) 2000-2014 Bo Zimmerman
+20140621.1827.10 info  MUD            http://www.coffeemud.org
+20140621.1827.10 info  HOST0          Disabled subsystems: COMMAND_POSE, QUITREASON, RETIREREASON, LEVELS, EXPERIENCE, RACES, CLASSES, HUNGER, THIRST, ALLERGIES, AUTODISEASE, STATS
+20140621.1827.10 info  MUD@5555       MUD Server started on port: 5555
+20140621.1827.10 info  HOST0          Connected to jdbc:mysql://localhost/coffeemud582
+20140621.1827.11 debug HOST0          SSL not configured.
+20140621.1827.11 debug HOST0          SSL not configured.
+20140621.1827.11 error SMTP           Set your coffeemud.ini parameter: DOMAIN
+20140621.1827.11 info  mweb-pub0      Started http pub0 on port 27744
+20140621.1827.11 info  mweb-admin0    Started http admin0 on port 27777
+20140621.1827.11 error mweb-pub0      Port 80: Address already in use: bind
+20140621.1827.11 debug mweb-admin0Tim Timeout Thread started
+20140621.1827.11 debug mweb-pub0Timeo Timeout Thread started
+20140621.1827.11 info  HOST0          WebMacros loaded  : 171
+20140621.1827.12 info  HOST0          MOB Types loaded  : 106
+20140621.1827.12 info  HOST0          Exit Types loaded : 27
+20140621.1827.12 info  HOST0          Area Types loaded : 12
+20140621.1827.12 info  HOST0          Locales loaded    : 97
+20140621.1827.13 info  HOST0          Fighter Skills    : 117
+20140621.1827.13 info  HOST0          Chants loaded     : 248
+20140621.1827.14 info  HOST0          Languages loaded  : 19
+20140621.1827.14 info  HOST0          Properties loaded : 218
+20140621.1827.15 info  HOST0          Prayers loaded    : 242
+20140621.1827.16 info  HOST0          Skills loaded     : 272
+20140621.1827.16 info  HOST0          Songs loaded      : 140
+20140621.1827.17 info  HOST0          Spells loaded     : 342
+20140621.1827.17 info  HOST0          Heroics loaded    : 6
+20140621.1827.17 info  HOST0          Tech Skills loaded: 2
+20140621.1827.18 info  HOST0          Traps loaded      : 75
+20140621.1827.18 info  HOST0          Basic Items loaded: 103
+20140621.1827.18 info  HOST0          Weapons loaded    : 57
+20140621.1827.18 info  HOST0          Armor loaded      : 47
+20140621.1827.18 info  HOST0          Magic Items loaded: 41
+20140621.1827.18 info  HOST0          Clan Items loaded : 19
+20140621.1827.18 info  HOST0          Electronics loaded: 52
+20140621.1827.19 info  HOST0          Behaviors loaded  : 94
+20140621.1827.19 info  HOST0          Commands loaded   : 267
+20140621.1827.19 info  HOST0          Races loaded      : 171
+20140621.1827.19 info  HOST0          Classes loaded    : 48
+20140621.1827.21 info  HOST0          Expertises defined: 1548
+20140621.1827.21 info  HOST0          Channels loaded   : 20
+20140621.1827.21 info  HOST0          Socials loaded    : 308
+20140621.1827.21 info  HOST0          Clans loaded      : 0
+20140621.1827.21 info  CM1Server0@277 Started CM1Server0@27733 on port 27733
+20140621.1827.21 info  I3Server       InterMud3 Core (c)1996 George Reese
+20140621.1827.21 error Intermud       Please set ADMINEMAIL in your coffeemud.ini file.
+20140621.1827.21 info  Intermud3      I3 client connection: 204.209.44.3@8080
+20140621.1827.21 info  I3Server       InterMud3 Server started on port 27766
+20140621.1827.22 info  HOST0          Loading catalog...
+20140621.1827.22 info  HOST0          Loading map...
+20140621.1827.22 info  HOST0          Preparing map...
+20140621.1827.22 info  HOST0          Mapped rooms      : 9 in 2 areas
+20140621.1827.22 info  HOST0          Services and utilities started
+20140621.1827.22 info  HOST0          Host#0 initializated.
+20140621.1827.22 info  MUD            Initialization complete.
+20140621.1827.50 info  Worker0#5      Connection from 127.0.0.1
+20140621.1827.58 info  Worker0#5      127.0.0.1 mushclient MXP CMP ANSI, character login: Vic
+20140621.1828.12 info  Rooms          Vic created room MafiaTest2#0.
+20140621.1828.35 info  Rooms          Vic modified room MafiaTest2#0.
+20140621.1831.39 info  Rooms          Vic modified room MafiaTest2#0.
+20140621.1831.54 info  Worker0#1      Connection from 98.202.159.56
+20140621.1832.17 info  Worker0#2      Creating user: Yakuza
+20140621.1833.51 error CommandProcess Vic starts system shutdown...
+20140621.1833.51 info  Shutdown0      New Connections are now closed
+20140621.1833.51 info  Shutdown0      All users saved.
+20140621.1833.51 info  Shutdown0      Stats saved.
+20140621.1833.51 info  Shutdown0      Notifying all objects of shutdown...
+20140621.1833.51 info  ServiceEngine  Scheduler stopped
+20140621.1833.52 info  CM1Server      Shutdown complete
+20140621.1833.54 info  Shutdown0      CM1Server0@27733 stopped
+20140621.1833.54 info  Intermud       Shutdown!!!
+20140621.1833.54 info  Shutdown0      I3Server stopped
+20140621.1833.54 info  Shutdown0      Disconnect: 98.202.159.56 (2m 60s)
+20140621.1833.58 info  Shutdown0      All users logged off.
+20140621.1833.58 info  SMTP           Shutting down.
+20140621.1834.00 info  Shutdown0      SMTP Server stopped.
+20140621.1834.01 info  ServiceEngine  Shutdown complete.
+20140621.1834.01 info  Shutdown0      Map Threads Stopped.
+20140621.1834.01 info  Shutdown0      Resources Cleared.
+20140621.1834.01 info  Shutdown0      Database connections closed.
+20140621.1834.01 info  mweb-pub0      Shutdown complete
+20140621.1834.01 info  mweb-pub0Timeo Timeout Thread shutdown
+20140621.1834.01 info  Shutdown0      Web server mweb-pub0 stopped.
+20140621.1834.01 info  mweb-admin0    Shutdown complete
+20140621.1834.01 info  mweb-admin0Tim Timeout Thread shutdown
+20140621.1834.01 info  Shutdown0      Web server mweb-admin0 stopped.
+20140621.1834.02 info  Shutdown0      CoffeeMud shutdown complete.
+20140621.1834.02 info  Shutdown0      Logout: Vic (6m)
+20140621.1834.02 info  Shutdown0      Disconnect: Vic: 127.0.0.1 (6m)
+20140621.1834.03 info  MUD@5555       Server cleaning up.
+20140621.1834.03 info  MUD@5555       MUD on port 5555 stopped!

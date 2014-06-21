@@ -1,0 +1,8 @@
+OPEN_PROG door
+	if numpcsroom ( != 2)
+		mpclose $i
+		mpecho  $i slams shut!
+		mpecho A voice echoes, 'THERE MUST BE TWO!'
+	else
+		mpecho A voice echoes, 'YOU MAY PASS!'
+	endif

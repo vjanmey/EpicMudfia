@@ -1,0 +1,1518 @@
+package com.planet_ink.coffee_mud.Commands;
+import com.planet_ink.coffee_mud.core.interfaces.*;
+import com.planet_ink.coffee_mud.core.*;
+import com.planet_ink.coffee_mud.core.collections.*;
+import com.planet_ink.coffee_mud.Abilities.interfaces.*;
+import com.planet_ink.coffee_mud.Areas.interfaces.*;
+import com.planet_ink.coffee_mud.Behaviors.interfaces.*;
+import com.planet_ink.coffee_mud.CharClasses.interfaces.*;
+import com.planet_ink.coffee_mud.Commands.interfaces.*;
+import com.planet_ink.coffee_mud.Common.interfaces.*;
+import com.planet_ink.coffee_mud.Exits.interfaces.*;
+import com.planet_ink.coffee_mud.Items.interfaces.*;
+import com.planet_ink.coffee_mud.Items.interfaces.Technical.TechType;
+import com.planet_ink.coffee_mud.Libraries.interfaces.JournalsLibrary;
+import com.planet_ink.coffee_mud.Locales.interfaces.*;
+import com.planet_ink.coffee_mud.MOBS.interfaces.*;
+import com.planet_ink.coffee_mud.Races.interfaces.*;
+
+import java.util.*;
+
+/*
+   Copyright 2000-2014 Bo Zimmerman
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+	   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+@SuppressWarnings({"unchecked","rawtypes"})
+public class Reset extends StdCommand
+{
+	public Reset(){}
+
+	private final String[] access=_i(new String[]{"RESET"});
+	@Override public boolean canBeOrdered(){return true;}
+	@Override public String[] getAccessWords(){return access;}
+	@Override public boolean securityCheck(MOB mob){return CMSecurity.isAllowed(mob,mob.location(),CMSecurity.SecFlag.RESET);}
+
+	public int resetAreaOramaManaI(MOB mob, Item I, Hashtable rememberI, String lead)
+		throws java.io.IOException
+	{
+		int nochange=0;
+		if(I instanceof AmmunitionWeapon)
+		{
+			final AmmunitionWeapon W=(AmmunitionWeapon)I;
+			if((W.requiresAmmunition())&&(W.ammunitionCapacity()>0))
+			{
+				String str=mob.session().prompt(_("@x1@x2 requires (@x3): ",lead,I.Name(),W.ammunitionType()));
+				if(str.length()>0)
+				{
+					if((str.trim().length()==0)||(str.equalsIgnoreCase("no")))
+					{
+						W.setAmmunitionType("");
+						W.setAmmoCapacity(0);
+						W.setUsesRemaining(100);
+						str=mob.session().prompt(_("@x1@x2 new weapon type: ",lead,I.Name()));
+						W.setWeaponType(CMath.s_int(str));
+					}
+					else
+						W.setAmmunitionType(str.trim());
+					nochange=1;
+				}
+			}
+		}
+		final Integer IT=(Integer)rememberI.get(I.Name());
+		if(IT!=null)
+		{
+			if(IT.intValue()==I.material())
+			{
+				mob.tell(_("@x1@x2 still @x3",lead,I.Name(),RawMaterial.CODES.NAME(I.material())));
+				return nochange;
+			}
+			I.setMaterial(IT.intValue());
+			mob.tell(_("@x1@x2 Changed to @x3",lead,I.Name(),RawMaterial.CODES.NAME(I.material())));
+			return 1;
+		}
+		while(true)
+		{
+			final String str=mob.session().prompt(lead+I.Name()+"/"+RawMaterial.CODES.NAME(I.material()),"");
+			if(str.equalsIgnoreCase("delete"))
+				return -1;
+			else
+			if(str.length()==0)
+			{
+				rememberI.put(I.Name(),Integer.valueOf(I.material()));
+				return nochange;
+			}
+			if(str.equals("?"))
+				mob.tell(I.Name()+"/"+I.displayText()+"/"+I.description());
+			else
+			{
+				final int material=RawMaterial.CODES.FIND_CaseSensitive(str.toUpperCase());
+				if(material>=0)
+				{
+					I.setMaterial(RawMaterial.CODES.GET(material));
+					mob.tell(_("@x1Changed to @x2",lead,RawMaterial.CODES.NAME(material)));
+					rememberI.put(I.Name(),Integer.valueOf(I.material()));
+					return 1;
+				}
+				final int possMat=RawMaterial.CODES.FIND_StartsWith(str);
+				String poss;
+				if(possMat<0)
+				{
+					poss="?";
+					for(final String mat : RawMaterial.CODES.NAMES())
+						if(mat.indexOf(str.toUpperCase())>=0)
+						   poss=mat;
+				}
+				else
+					poss=RawMaterial.CODES.NAME(possMat);
+				mob.tell(_("@x1'@x2' does not exist.  Try '@x3'.",lead,str,poss));
+			}
+		}
+	}
+
+	public void makeManufacturer(String[] names, TechType[] types)
+	{
+		if(names.length%3!=0)
+			Log.errOut("Test: Not /3 names: "+CMParms.toStringList(names));
+		else
+		{
+			for(int i=0;i<6;i++)
+			{
+				Manufacturer M=CMLib.tech().getManufacturer(names[i]);
+				if((M!=null)&&(M!=CMLib.tech().getDefaultManufacturer()))
+				{
+					Log.errOut("Dup Reset Manufacturer Name: "+names[i]);
+					continue;
+				}
+				M=(Manufacturer)CMClass.getCommon("DefaultManufacturer");
+				M.setName(names[i]);
+				if(i%3==0)
+				{
+					M.setMinTechLevelDiff((byte)0);
+					M.setMaxTechLevelDiff((byte)(M.getMinTechLevelDiff()+CMLib.dice().roll(1, 3, 2)));
+				}
+				else
+				if(i%3==1)
+				{
+					M.setMinTechLevelDiff((byte)3);
+					M.setMaxTechLevelDiff((byte)(M.getMinTechLevelDiff()+CMLib.dice().roll(1, 3, 2)));
+				}
+				else
+				if(i%3==2)
+				{
+					M.setMinTechLevelDiff((byte)(8-CMLib.dice().roll(1, 3, 0)));
+					M.setMaxTechLevelDiff((byte)10);
+				}
+				M.setEfficiencyPct(0.75+CMath.div(CMLib.dice().rollNormalDistribution(1, 50, 0),100.0));
+				M.setReliabilityPct(0.75+CMath.div(CMLib.dice().rollNormalDistribution(1, 50, 0),100.0));
+				M.setManufactureredTypesList(CMParms.toStringList(types));
+				CMLib.tech().addManufacturer(M);
+			}
+		}
+	}
+
+	protected int rightImportMat(MOB mob, Item I, boolean openOnly)
+		throws java.io.IOException
+	{
+		if((I!=null)&&(I.description().trim().length()>0))
+		{
+			final int x=I.description().trim().indexOf(' ');
+			final int y=I.description().trim().lastIndexOf(' ');
+			if((x<0)||((x>0)&&(y==x)))
+			{
+				String s=I.description().trim().toLowerCase();
+				if((mob!=null)&&(mob.session()!=null)&&(openOnly))
+				{
+					if(mob.session().confirm(_("Clear @x1/@x2/@x3 (Y/n)?",I.name(),I.displayText(),I.description()),_("Y")))
+					{
+						I.setDescription("");
+						return I.material();
+					}
+					return -1;
+				}
+				int rightMat=-1;
+				for (final String[] objDesc : Import.objDescs)
+				{
+					if(objDesc[0].equals(s))
+					{
+						rightMat=CMath.s_int(objDesc[1]);
+						break;
+					}
+				}
+				s=I.description().trim().toUpperCase();
+				if(rightMat<0)
+				{
+					Log.sysOut("Reset","Unconventional material: "+I.description());
+					rightMat = RawMaterial.CODES.FIND_CaseSensitive(s);
+				}
+				if(rightMat<0)
+					Log.sysOut("Reset","Unknown material: "+I.description());
+				else
+				if(I.material()!=rightMat)
+				{
+					if(mob!=null)
+					{
+						if(mob.session().confirm(_("Change @x1/@x2 material to @x3 (y/N)?",I.name(),I.displayText(),RawMaterial.CODES.NAME(rightMat)),_("N")))
+						{
+							I.setMaterial(rightMat);
+							I.setDescription("");
+							return rightMat;
+						}
+					}
+					else
+					{
+						Log.sysOut("Reset","Changed "+I.name()+"/"+I.displayText()+" material to "+RawMaterial.CODES.NAME(rightMat)+"!");
+						I.setMaterial(rightMat);
+						I.setDescription("");
+						return rightMat;
+					}
+				}
+				else
+				{
+					I.setDescription("");
+					return rightMat;
+				}
+			}
+		}
+		return -1;
+	}
+
+	public String resetWarning(MOB mob, Area A)
+	{
+		Room R=null;
+		final StringBuffer warning=new StringBuffer("");
+		String roomWarning=null;
+		for(final Enumeration<Room> e=A.getProperMap();e.hasMoreElements();)
+		{
+			R=e.nextElement();
+			roomWarning=resetWarning(mob,R);
+			if(roomWarning!=null)
+				warning.append(roomWarning);
+		}
+		if(warning.length()==0) return null;
+		return warning.toString();
+	}
+	public String resetWarning(MOB mob, Room R)
+	{
+		if((mob==null)||(R==null)) return null;
+		final StringBuffer warning=new StringBuffer("");
+		for(final Session S : CMLib.sessions().localOnlineIterable())
+			if((S!=null)&&(S.mob()!=null)&&(S.mob()!=mob)&&(S.mob().location()==R))
+				warning.append("A player, '"+S.mob().Name()+"' is in "+CMLib.map().getExtendedRoomID(R)+"\n\r");
+		Item I=null;
+		for(int i=0;i<R.numItems();i++)
+		{
+			I=R.getItem(i);
+			if((I instanceof DeadBody)
+			&&(((DeadBody)I).playerCorpse()))
+				warning.append("A player corpse, '"+I.Name()+"' is in "+CMLib.map().getExtendedRoomID(R)+"\n\r");
+		}
+		if(R instanceof GridLocale)
+		{
+			final List<Room> rooms=((GridLocale)R).getAllRooms();
+			for(int r=0;r<rooms.size();r++)
+			{
+				final String s=resetWarning(mob,rooms.get(r));
+				if(s!=null) warning.append(s);
+			}
+		}
+		if(warning.length()==0) return null;
+		return warning.toString();
+	}
+
+	private void reportChangesDestroyNewM(MOB oldM, MOB newM, StringBuffer changes)
+	{
+		if((changes == null)||(oldM==null)) return;
+		changes.append(newM.name()+":"+newM.basePhyStats().level()+", ");
+		for(int i=0;i<oldM.getStatCodes().length;i++)
+			if((!oldM.getStat(oldM.getStatCodes()[i]).equals(newM.getStat(newM.getStatCodes()[i]))))
+				changes.append(oldM.getStatCodes()[i]+"("+oldM.getStat(oldM.getStatCodes()[i])+"->"+newM.getStat(newM.getStatCodes()[i])+"), ");
+		changes.append("\n\r");
+		newM.destroy(); // this was a copy
+	}
+
+	public boolean fixMob(MOB M, StringBuffer recordedChanges)
+	{
+		final MOB M2 = CMLib.leveler().fillOutMOB(M.baseCharStats().getCurrentClass(),M.basePhyStats().level());
+		if((M.basePhyStats().attackAdjustment() != M2.basePhyStats().attackAdjustment())
+		||(M.basePhyStats().armor() != M2.basePhyStats().armor())
+		||(M.basePhyStats().damage() != M2.basePhyStats().damage())
+		||(M.basePhyStats().speed() != M2.basePhyStats().speed()))
+		{
+			final MOB oldM=M;
+			if(recordedChanges!=null) M=(MOB)M.copyOf();
+			M.basePhyStats().setAttackAdjustment(M2.basePhyStats().attackAdjustment());
+			M.basePhyStats().setArmor(M2.basePhyStats().armor());
+			M.basePhyStats().setDamage(M2.basePhyStats().damage());
+			M.basePhyStats().setSpeed(M2.basePhyStats().speed());
+			M.recoverPhyStats();
+			if(recordedChanges!=null)
+			{
+				reportChangesDestroyNewM(oldM,M,recordedChanges);
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean execute(MOB mob, Vector commands, int metaFlags)
+		throws java.io.IOException
+	{
+		commands.removeElementAt(0);
+		if(commands.size()<1)
+		{
+			mob.tell(_("Reset this ROOM, the whole AREA, or REJUV?"));
+			return false;
+		}
+		String s=(String)commands.elementAt(0);
+		String rest=(commands.size()>1)?CMParms.combine(commands,1):"";
+		if(s.equalsIgnoreCase("rejuv"))
+		{
+			commands.removeElementAt(0);
+			if(commands.size()<1)
+			{
+				mob.tell(_("Rejuv this ROOM, or the whole AREA?  You can also specify ITEMS or MOBS after ROOM/AREA."));
+				return false;
+			}
+			s=(String)commands.elementAt(0);
+			rest=(commands.size()>1)?CMParms.combine(commands,1):"";
+			int tickID=0;
+			if(rest.startsWith("MOB")) tickID=Tickable.TICKID_MOB;
+			if(rest.startsWith("ITEM")) tickID=Tickable.TICKID_ROOM_ITEM_REJUV;
+			if(s.equalsIgnoreCase("room"))
+			{
+				CMLib.threads().rejuv(mob.location(),tickID);
+				mob.tell(_("Done."));
+			}
+			else
+			if(s.equalsIgnoreCase("area"))
+			{
+				final Area A=mob.location().getArea();
+				for(final Enumeration<Room> e=A.getProperMap();e.hasMoreElements();)
+					CMLib.threads().rejuv(e.nextElement(),tickID);
+				mob.tell(_("Done."));
+			}
+			else
+			{
+				mob.tell(_("Rejuv this ROOM, or the whole AREA?"));
+				return false;
+			}
+		}
+		else
+		if(s.equalsIgnoreCase("room"))
+		{
+			final String warning=resetWarning(mob, mob.location());
+			if((mob.session()==null)||(warning==null)||(mob.session().confirm(_("@x1\n\rReset the contents of the room '@x2', OK (Y/n)?",warning,mob.location().displayText(mob)),_("Y"))))
+			{
+				for(final Session S : CMLib.sessions().localOnlineIterable())
+					if((S!=null)&&(S.mob()!=null)&&(S.mob().location()!=null)&&(S.mob().location()==mob.location()))
+						S.mob().tell(mob,null,null,_("<S-NAME> order(s) this room to normalcy."));
+				CMLib.map().resetRoom(mob.location(), true);
+				mob.tell(_("Done."));
+			}
+			else
+				mob.tell(_("Cancelled."));
+		}
+		else
+		if(s.equalsIgnoreCase("INIFILE")||s.equalsIgnoreCase("coffeemud.ini"))
+		{
+			CMProps.instance().resetSecurityVars();
+			CMProps.instance().resetSystemVars();
+			mob.tell(_("Done."));
+		}
+		else
+		if(s.equalsIgnoreCase("area"))
+		{
+			final Area A=mob.location().getArea();
+			if(A!=null)
+			{
+				final String warning=resetWarning(mob, A);
+				if(warning!=null) mob.tell(warning);
+				if((mob.session()==null)||(mob.session().confirm(_("Reset the contents of the area '@x1', OK (Y/n)?",A.name()),_("Y"))))
+				{
+					for(final Session S : CMLib.sessions().localOnlineIterable())
+						if((S!=null)&&(S.mob()!=null)&&(S.mob().location()!=null)&&(A.inMyMetroArea(S.mob().location().getArea())))
+							S.mob().tell(mob,null,null,_("<S-NAME> order(s) this area to normalcy."));
+					CMLib.map().resetArea(A);
+					mob.tell(_("Done."));
+				}
+				else
+					mob.tell(_("Cancelled."));
+			}
+		}
+		else
+		if(CMLib.players().getPlayer(s)!=null)
+		{
+			final MOB M=CMLib.players().getPlayer(s);
+			String what="";
+			if(commands.size()>0)
+				what=CMParms.combine(commands,1).toUpperCase();
+			if(what.startsWith("EXPERTIS"))
+			{
+				M.delAllExpertises();
+				mob.tell(_("Done."));
+			}
+			else
+				mob.tell(_("Can't reset that trait -- as its not defined."));
+		}
+		else
+		if(s.equalsIgnoreCase("arearoomids")&&(CMSecurity.isAllowed(mob, mob.location(), CMSecurity.SecFlag.CMDROOMS)))
+		{
+			final Area A=mob.location().getArea();
+			boolean somethingDone=false;
+			for(final Enumeration e=A.getCompleteMap();e.hasMoreElements();)
+			{
+				Room R=(Room)e.nextElement();
+				synchronized(("SYNC"+R.roomID()).intern())
+				{
+					R=CMLib.map().getRoom(R);
+					if((R.roomID().length()>0)
+					&&(R.roomID().indexOf('#')>0)
+					&&(!R.roomID().startsWith(A.Name())))
+					{
+						final String oldID=R.roomID();
+						R.setRoomID(R.getArea().getNewRoomID(R,-1));
+						CMLib.database().DBReCreate(R,oldID);
+						try
+						{
+							for(final Enumeration r=CMLib.map().rooms();r.hasMoreElements();)
+							{
+								Room R2=(Room)r.nextElement();
+								R2=CMLib.map().getRoom(R2);
+								if(R2!=R)
+								for(int d=Directions.NUM_DIRECTIONS()-1;d>=0;d--)
+									if(R2.rawDoors()[d]==R)
+									{
+										CMLib.database().DBUpdateExits(R2);
+										break;
+									}
+							}
+						}catch(final NoSuchElementException nse){}
+						if(R instanceof GridLocale)
+							R.getArea().fillInAreaRoom(R);
+						somethingDone=true;
+						mob.tell(_("Room @x1 changed to @x2.",oldID,R.roomID()));
+					}
+				}
+			}
+			if(!somethingDone)
+				mob.tell(_("No rooms were found which needed renaming."));
+			else
+				mob.tell(_("Done renumbering rooms."));
+		}
+		else
+		if(!CMSecurity.isAllowed(mob,mob.location(),CMSecurity.SecFlag.RESETUTILS))
+		{
+			mob.tell(_("'@x1' is an unknown reset.  Try ROOM, AREA, AREAROOMIDS *.\n\r * = Reset functions which may take a long time to complete.",s));
+			return false;
+		}
+		else
+		if(s.equalsIgnoreCase("propertygarbage"))
+		{
+			Room R=null;
+			LandTitle T=null;
+			for(final Enumeration e=CMLib.map().rooms();e.hasMoreElements();)
+			{
+				R=(Room)e.nextElement();
+				synchronized(("SYNC"+R.roomID()).intern())
+				{
+					R=CMLib.map().getRoom(R);
+					T=CMLib.law().getLandTitle(R);
+					if((T!=null)
+					&&(T.getOwnerName().length()==0))
+					{
+						T.setOwnerName(mob.Name());
+						T.setOwnerName("");
+						T.updateLot(new XVector(mob.name()));
+					}
+				}
+			}
+		}
+		else
+		if(s.equalsIgnoreCase("racestatgains")&&(CMSecurity.isAllowed(mob,mob.location(),CMSecurity.SecFlag.CMDRACES)))
+		{
+			for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+			{
+				final Race R=(Race)e.nextElement();
+				if(R.isGeneric())
+				{
+					final CharStats ADJSTAT1=(CharStats)CMClass.getCommon("DefaultCharStats");
+					ADJSTAT1.setAllValues(0);
+					CMLib.coffeeMaker().setCharStats(ADJSTAT1,R.getStat("ASTATS"));
+					boolean save=false;
+					for(final int i: CharStats.CODES.BASECODES())
+					{
+						if(ADJSTAT1.getStat(i)>5)
+						{
+							ADJSTAT1.setStat(i,5);
+							save=true;
+						}
+					}
+					if(save)
+					{
+						R.setStat("ASTATS",CMLib.coffeeMaker().getCharStatsStr(ADJSTAT1));
+						mob.tell(_("Modified @x1",R.ID()));
+						CMLib.database().DBDeleteRace(R.ID());
+						CMLib.database().DBCreateRace(R.ID(),R.racialParms());
+					}
+				}
+			}
+		}
+		else
+		if(s.equalsIgnoreCase("genraceagingcharts")&&(CMSecurity.isAllowed(mob,mob.location(),CMSecurity.SecFlag.CMDRACES)))
+		{
+			for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+			{
+				final Race R=(Race)e.nextElement();
+				final Vector racesToBaseFrom=new Vector();
+				final Race human=CMClass.getRace("Human");
+				final Race halfling=CMClass.getRace("Halfling");
+				if((R.isGeneric())&&(R.ID().length()>1)&&(!R.ID().endsWith("Race"))&&(Character.isUpperCase(R.ID().charAt(0))))
+				{
+					int lastStart=0;
+					int c=1;
+					while(c<=R.ID().length())
+					{
+						if((c==R.ID().length())||(Character.isUpperCase(R.ID().charAt(c))))
+						{
+							if((lastStart==0)&&(c==R.ID().length())&&(!R.ID().endsWith("ling"))&&(!R.ID().startsWith("Half")))
+								break;
+							final String partial=R.ID().substring(lastStart,c);
+							if(partial.equals("Half")&&(!racesToBaseFrom.contains(human)))
+							{
+								racesToBaseFrom.add(human);
+								lastStart=c;
+							}
+							else
+							{
+								Race R2=CMClass.getRace(partial);
+								if((R2!=null)&&(R2!=R))
+								{
+									racesToBaseFrom.add(R2);
+									lastStart=c;
+								}
+								else
+								if(partial.endsWith("ling"))
+								{
+									if(!racesToBaseFrom.contains(halfling))
+										racesToBaseFrom.add(halfling);
+									lastStart=c;
+									R2=CMClass.getRace(partial.substring(0,partial.length()-4));
+									if(R2!=null)
+										racesToBaseFrom.add(R2);
+								}
+							}
+							if(c==R.ID().length())
+								break;
+						}
+						c++;
+					}
+					final StringBuffer answer=new StringBuffer(R.ID()+": ");
+					for(int i=0;i<racesToBaseFrom.size();i++)
+						answer.append(((Race)racesToBaseFrom.elementAt(i)).ID()+" ");
+					mob.tell(answer.toString());
+					if(racesToBaseFrom.size()>0)
+					{
+						final long[] ageChart=new long[Race.AGE_ANCIENT+1];
+						for(int i=0;i<racesToBaseFrom.size();i++)
+						{
+							final Race R2=(Race)racesToBaseFrom.elementAt(i);
+							int lastVal=0;
+							for(int x=0;x<ageChart.length;x++)
+							{
+								int val=R2.getAgingChart()[x];
+								if(val>=Integer.MAX_VALUE)
+									val=lastVal+(x*1000);
+								ageChart[x]+=val;
+								lastVal=val;
+							}
+						}
+						for(int x=0;x<ageChart.length;x++)
+							ageChart[x]=ageChart[x]/racesToBaseFrom.size();
+						int lastVal=0;
+						int thisVal=0;
+						for(int x=0;x<ageChart.length;x++)
+						{
+							lastVal=thisVal;
+							thisVal=(int)ageChart[x];
+							if(thisVal<lastVal)
+								thisVal+=lastVal;
+							R.getAgingChart()[x]=thisVal;
+						}
+						CMLib.database().DBDeleteRace(R.ID());
+						CMLib.database().DBCreateRace(R.ID(),R.racialParms());
+					}
+				}
+			}
+		}
+		else
+		if(s.equalsIgnoreCase("bankdata")&&(CMSecurity.isASysOp(mob)))
+		{
+			final String bank=CMParms.combine(commands,1);
+			if(bank.length()==0)
+			{
+				mob.tell(_("Which bank?"));
+				return false;
+			}
+			final List<JournalsLibrary.JournalEntry> V=CMLib.database().DBReadJournalMsgs(bank);
+			for(int v=0;v<V.size();v++)
+			{
+				final JournalsLibrary.JournalEntry V2=V.get(v);
+				final String name=V2.from;
+				final String ID=V2.subj;
+				String classID=V2.to;
+				final String data=V2.msg;
+				if(ID.equalsIgnoreCase("COINS")) classID="COINS";
+				final Item I=(Item)CMClass.getItem("GenItem").copyOf();
+				CMLib.database().DBCreateData(name,bank,""+I,classID+";"+data);
+			}
+			CMLib.database().DBDeleteJournal(bank,null); // banks are no longer journaled
+			mob.tell(_("@x1 records done.",""+V.size()));
+		}
+		else
+		if(s.equalsIgnoreCase("mobstats")&&(CMSecurity.isASysOp(mob)))
+		{
+			s="room";
+			if(commands.size()>1) s=(String)commands.elementAt(1);
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			StringBuffer recordedChanges=null;
+			for(int i=1;i<commands.size();i++)
+				if(((String)commands.elementAt(i)).equalsIgnoreCase("NOSAVE"))
+				{
+					recordedChanges=new StringBuffer("");
+					break;
+				}
+			final Vector rooms=new Vector();
+			if(s.toUpperCase().startsWith("ROOM"))
+				rooms.addElement(mob.location());
+			else
+			if(s.toUpperCase().startsWith("AREA"))
+			{
+				try
+				{
+					for(final Enumeration e=mob.location().getArea().getCompleteMap();e.hasMoreElements();)
+						rooms.addElement(e.nextElement());
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			if(s.toUpperCase().startsWith("CATALOG"))
+			{
+				try
+				{
+					final MOB[] mobs=CMLib.catalog().getCatalogMobs();
+					for (final MOB M : mobs)
+					{
+						if(fixMob(M,recordedChanges))
+						{
+							mob.tell(_("Catalog mob @x1 done.",M.Name()));
+							CMLib.catalog().updateCatalog(M);
+						}
+					}
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			if(s.toUpperCase().startsWith("WORLD"))
+			{
+				try
+				{
+					for(final Enumeration e=CMLib.map().areas();e.hasMoreElements();)
+					{
+						final Area A=(Area)e.nextElement();
+						boolean skip=false;
+						for(int i=1;i<commands.size();i++)
+							if(((String)commands.elementAt(i)).equalsIgnoreCase(A.Name())||rest.equalsIgnoreCase(A.Name()))
+							{
+								skip=true;
+								break;
+							}
+						if(skip) continue;
+						for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+							rooms.addElement(r.nextElement());
+					}
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			{
+				mob.tell(_("Try ROOM, AREA, CATALOG, or WORLD."));
+				return false;
+			}
+			if(recordedChanges!=null)
+				mob.session().println(".");
+			for(final Enumeration r=rooms.elements();r.hasMoreElements();)
+			{
+				Room R=CMLib.map().getRoom((Room)r.nextElement());
+				if(R!=null)
+				synchronized(("SYNC"+R.roomID()).intern())
+				{
+					R=CMLib.map().getRoom(R);
+					if(R==null) continue;
+					if((recordedChanges!=null)&&(recordedChanges.length()>0))
+					{
+						mob.session().rawOut(recordedChanges.toString());
+						recordedChanges.setLength(0);
+					}
+					R.getArea().setAreaState(Area.State.FROZEN);
+					CMLib.map().resetRoom(R, true);
+					boolean somethingDone=false;
+					for(int m=0;m<R.numInhabitants();m++)
+					{
+						final MOB M=R.fetchInhabitant(m);
+						if((M.isSavable())
+						&&(!CMLib.flags().isCataloged(M))
+						&&(M.getStartRoom()==R))
+							somethingDone=fixMob(M,recordedChanges) || somethingDone;
+					}
+					if(somethingDone)
+					{
+						mob.tell(_("Room @x1 done.",R.roomID()));
+						CMLib.database().DBUpdateMOBs(R);
+					}
+					if(R.getArea().getAreaState()!=Area.State.ACTIVE)
+						R.getArea().setAreaState(Area.State.ACTIVE);
+				}
+				if(recordedChanges==null)
+					mob.session().print(".");
+			}
+			if((recordedChanges!=null)&&(recordedChanges.length()>0))
+				mob.session().rawOut(recordedChanges.toString());
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("groundlydoors")&&(CMSecurity.isASysOp(mob)))
+		{
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			try
+			{
+				for(final Enumeration r=CMLib.map().rooms();r.hasMoreElements();)
+				{
+					final Room R=(Room)r.nextElement();
+					boolean changed=false;
+					if(R.roomID().length()>0)
+					for(int d=Directions.NUM_DIRECTIONS()-1;d>=0;d--)
+					{
+						final Exit E=R.getRawExit(d);
+						if((E!=null)&&E.hasADoor()&&E.name().equalsIgnoreCase("the ground"))
+						{
+							E.setName(_("a door"));
+							E.setExitParams("door","close","open","a door, closed.");
+							changed=true;
+						}
+					}
+					if(changed)
+					{
+						Log.sysOut("Reset","Groundly doors in "+R.roomID()+" fixed.");
+						CMLib.database().DBUpdateExits(R);
+					}
+					mob.session().print(".");
+				}
+			}catch(final NoSuchElementException nse){}
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("allmobarmorfix")&&(CMSecurity.isASysOp(mob)))
+		{
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			for(final Enumeration a=CMLib.map().areas();a.hasMoreElements();)
+			{
+				final Area A=(Area)a.nextElement();
+				A.setAreaState(Area.State.FROZEN);
+				for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+				{
+					Room R=(Room)r.nextElement();
+					if(R.roomID().length()==0) continue;
+					synchronized(("SYNC"+R.roomID()).intern())
+					{
+						R=CMLib.map().getRoom(R);
+						CMLib.map().resetRoom(R, true);
+						boolean didSomething=false;
+						for(int i=0;i<R.numInhabitants();i++)
+						{
+							final MOB M=R.fetchInhabitant(i);
+							if((M.isMonster())
+							&&(M.getStartRoom()==R)
+							&&(M.basePhyStats().armor()==((100-(M.basePhyStats().level()*7)))))
+							{
+								final int oldArmor=M.basePhyStats().armor();
+								M.basePhyStats().setArmor(CMLib.leveler().getLevelMOBArmor(M));
+								M.recoverPhyStats();
+								Log.sysOut("Reset","Updated "+M.name()+" in room "+R.roomID()+" from "+oldArmor+" to "+M.basePhyStats().armor()+".");
+								didSomething=true;
+							}
+							else
+								Log.sysOut("Reset","Skipped "+M.name()+" in room "+R.roomID());
+						}
+						mob.session().print(".");
+						if(didSomething)
+							CMLib.database().DBUpdateMOBs(R);
+					}
+				}
+				if(A.getAreaState()!=Area.State.ACTIVE)
+					A.setAreaState(Area.State.ACTIVE);
+			}
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("goldceilingfixer")&&(CMSecurity.isASysOp(mob)))
+		{
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			for(final Enumeration a=CMLib.map().areas();a.hasMoreElements();)
+			{
+				final Area A=(Area)a.nextElement();
+				A.setAreaState(Area.State.FROZEN);
+				for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+				{
+					Room R=(Room)r.nextElement();
+					if(R.roomID().length()==0) continue;
+					synchronized(("SYNC"+R.roomID()).intern())
+					{
+						R=CMLib.map().getRoom(R);
+						CMLib.map().resetRoom(R, true);
+						boolean didSomething=false;
+						for(int i=0;i<R.numInhabitants();i++)
+						{
+							final MOB M=R.fetchInhabitant(i);
+							if((M.isMonster())
+							&&(M.getStartRoom()==R)
+							&&(CMLib.beanCounter().getMoney(M)>(M.basePhyStats().level()+1)))
+							{
+								CMLib.beanCounter().setMoney(M,CMLib.dice().roll(1,M.basePhyStats().level(),0)+CMLib.dice().roll(1,10,0));
+								Log.sysOut("Reset","Updated "+M.name()+" in room "+R.roomID()+".");
+								didSomething=true;
+							}
+						}
+						mob.session().print(".");
+						if(didSomething)
+							CMLib.database().DBUpdateMOBs(R);
+					}
+				}
+				if(A.getAreaState()!=Area.State.ACTIVE)
+					A.setAreaState(Area.State.ACTIVE);
+			}
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("areainstall")&&(CMSecurity.isASysOp(mob)))
+		{
+			if(mob.session()==null) return false;
+			if(commands.size()<2)
+			{
+				mob.tell(_("You need to specify a property or behavior to install."));
+				return false;
+			}
+			final String ID=(String)commands.elementAt(1);
+			Object O=CMClass.getAbility(ID);
+			if(O==null) O=CMClass.getBehavior(ID);
+			if(O==null)
+			{
+				mob.tell(_("'@x1' is not a known property or behavior.  Try LIST.",ID));
+				return false;
+			}
+
+			mob.session().print(_("working..."));
+			for(final Enumeration a=CMLib.map().areas();a.hasMoreElements();)
+			{
+				final Area A=(Area)a.nextElement();
+				boolean changed=false;
+				if((O instanceof Behavior))
+				{
+					Behavior B=A.fetchBehavior(((Behavior)O).ID());
+					if(B==null)
+					{
+						B=(Behavior)((Behavior)O).copyOf();
+						B.setParms(CMParms.combine(commands,2));
+						A.addBehavior(B);
+						changed=true;
+					}
+					else
+					if(!B.getParms().equals(CMParms.combine(commands,2)))
+					{
+						B.setParms(CMParms.combine(commands,2));
+						changed=true;
+					}
+				}
+				else
+				if(O instanceof Ability)
+				{
+					Ability B=A.fetchEffect(((Ability)O).ID());
+					if(B==null)
+					{
+						B=(Ability)((Ability)O).copyOf();
+						B.setMiscText(CMParms.combine(commands,2));
+						A.addNonUninvokableEffect(B);
+						changed=true;
+					}
+					else
+					if(!B.text().equals(CMParms.combine(commands,2)))
+					{
+						B.setMiscText(CMParms.combine(commands,2));
+						changed=true;
+					}
+				}
+				if(changed)
+				{
+					CMLib.database().DBUpdateArea(A.Name(),A);
+					mob.session().print(".");
+				}
+			}
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("worldmatconfirm")&&(CMSecurity.isASysOp(mob)))
+		{
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			for(final Enumeration a=CMLib.map().areas();a.hasMoreElements();)
+			{
+				final Area A=(Area)a.nextElement();
+				A.setAreaState(Area.State.FROZEN);
+				for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+				{
+					Room R=(Room)r.nextElement();
+					if(R.roomID().length()>0)
+					{
+						synchronized(("SYNC"+R.roomID()).intern())
+						{
+							R=CMLib.map().getRoom(R);
+							CMLib.map().resetRoom(R, true);
+							boolean changedMOBS=false;
+							boolean changedItems=false;
+							for(int i=0;i<R.numItems();i++)
+								changedItems=changedItems||(rightImportMat(null,R.getItem(i),false)>=0);
+							for(int m=0;m<R.numInhabitants();m++)
+							{
+								final MOB M=R.fetchInhabitant(m);
+								if(M==mob) continue;
+								if(!M.isSavable()) continue;
+								for(int i=0;i<M.numItems();i++)
+									changedMOBS=changedMOBS||(rightImportMat(null,M.getItem(i),false)>=0);
+								final ShopKeeper SK=CMLib.coffeeShops().getShopKeeper(M);
+								if(SK!=null)
+								{
+									for(final Iterator<Environmental> i=SK.getShop().getStoreInventory();i.hasNext();)
+									{
+										final Environmental E=i.next();
+										if(E instanceof Item)
+										{
+											final Item I=(Item)E;
+											boolean didSomething=false;
+											didSomething=rightImportMat(null,I,false)>=0;
+											changedMOBS=changedMOBS||didSomething;
+											if(didSomething)
+											{
+												final int numInStock=SK.getShop().numberInStock(I);
+												final int stockPrice=SK.getShop().stockPrice(I);
+												SK.getShop().delAllStoreInventory(I);
+												SK.getShop().addStoreInventory(I,numInStock,stockPrice);
+											}
+										}
+									}
+								}
+							}
+							if(changedItems)
+								CMLib.database().DBUpdateItems(R);
+							if(changedMOBS)
+								CMLib.database().DBUpdateMOBs(R);
+							mob.session().print(".");
+						}
+					}
+				}
+				if(A.getAreaState()!=Area.State.ACTIVE)
+					A.setAreaState(Area.State.ACTIVE);
+			}
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("itemstats")&&(CMSecurity.isASysOp(mob)))
+		{
+			s="room";
+			if(commands.size()>1) s=(String)commands.elementAt(1);
+
+			if(mob.session()==null) return false;
+			mob.session().print(_("working..."));
+			StringBuffer recordedChanges=null;
+			for(int i=1;i<commands.size();i++)
+				if(((String)commands.elementAt(i)).equalsIgnoreCase("NOSAVE"))
+				{
+					recordedChanges=new StringBuffer("");
+					break;
+				}
+
+			final Vector rooms=new Vector();
+			if(s.toUpperCase().startsWith("ROOM"))
+				rooms.addElement(mob.location());
+			else
+			if(s.toUpperCase().startsWith("AREA"))
+			{
+				try
+				{
+					for(final Enumeration e=mob.location().getArea().getCompleteMap();e.hasMoreElements();)
+						rooms.addElement(e.nextElement());
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			if(s.toUpperCase().startsWith("CATALOG"))
+			{
+				try
+				{
+					final Item[] items=CMLib.catalog().getCatalogItems();
+					for (final Item I : items)
+					{
+						if(CMLib.itemBuilder().itemFix(I,-1,recordedChanges))
+						{
+							mob.tell(_("Catalog item @x1 done.",I.Name()));
+							CMLib.catalog().updateCatalog(I);
+						}
+					}
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			if(s.toUpperCase().startsWith("WORLD"))
+			{
+				try
+				{
+					for(final Enumeration e=CMLib.map().areas();e.hasMoreElements();)
+					{
+						final Area A=(Area)e.nextElement();
+						boolean skip=false;
+						for(int i=1;i<commands.size();i++)
+							if(((String)commands.elementAt(i)).equalsIgnoreCase(A.Name())||rest.equalsIgnoreCase(A.Name()))
+							{
+								skip=true;
+								commands.removeElementAt(i);
+								break;
+							}
+						if(skip) continue;
+						for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+							rooms.addElement(r.nextElement());
+					}
+				}catch(final NoSuchElementException nse){}
+			}
+			else
+			{
+				mob.tell(_("Try ROOM, AREA, CATALOG, or WORLD."));
+				return false;
+			}
+			if(recordedChanges!=null)
+				mob.session().println(".");
+			for(final Enumeration r=rooms.elements();r.hasMoreElements();)
+			{
+				Room R=CMLib.map().getRoom((Room)r.nextElement());
+				if((R==null)||(R.getArea()==null)||(R.roomID().length()==0)) continue;
+				final Area A=R.getArea();
+				A.setAreaState(Area.State.FROZEN);
+				if((recordedChanges!=null)&&(recordedChanges.length()>0))
+				{
+					mob.session().rawOut(recordedChanges.toString());
+					recordedChanges.setLength(0);
+				}
+				synchronized(("SYNC"+R.roomID()).intern())
+				{
+
+					R=CMLib.map().getRoom(R);
+					CMLib.map().resetRoom(R, true);
+					boolean changedMOBS=false;
+					boolean changedItems=false;
+					for(int i=0;i<R.numItems();i++)
+					{
+						final Item I=R.getItem(i);
+						if(CMLib.itemBuilder().itemFix(I,-1,recordedChanges))
+							changedItems=true;
+					}
+					for(int m=0;m<R.numInhabitants();m++)
+					{
+						final MOB M=R.fetchInhabitant(m);
+						if((M==mob)||(!M.isMonster())) continue;
+						if(!M.isSavable()) continue;
+						for(int i=0;i<M.numItems();i++)
+						{
+							final Item I=M.getItem(i);
+							int lvl=-1;
+							if((I.basePhyStats().level()>M.basePhyStats().level())
+							||((I.basePhyStats().level()>91)&&((I.basePhyStats().level() + (I.basePhyStats().level()/10))<M.basePhyStats().level())))
+								lvl=M.basePhyStats().level();
+							if(CMLib.itemBuilder().itemFix(I,lvl,recordedChanges))
+								changedMOBS=true;
+						}
+						final ShopKeeper SK=CMLib.coffeeShops().getShopKeeper(M);
+						if(SK!=null)
+						{
+							for(final Iterator<Environmental> i=SK.getShop().getStoreInventory();i.hasNext();)
+							{
+								final Environmental E=i.next();
+								if(E instanceof Item)
+								{
+									final Item I=(Item)E;
+									boolean didSomething=false;
+									didSomething=CMLib.itemBuilder().itemFix(I,-1,recordedChanges);
+									changedMOBS=changedMOBS||didSomething;
+									if(didSomething)
+									{
+										final int numInStock=SK.getShop().numberInStock(I);
+										final int stockPrice=SK.getShop().stockPrice(I);
+										SK.getShop().delAllStoreInventory(I);
+										SK.getShop().addStoreInventory(I,numInStock,stockPrice);
+									}
+								}
+							}
+						}
+					}
+					if((changedItems)&&(recordedChanges==null))
+						CMLib.database().DBUpdateItems(R);
+					if((changedMOBS)&&(recordedChanges==null))
+						CMLib.database().DBUpdateMOBs(R);
+					if(recordedChanges==null)
+						mob.session().print(".");
+				}
+				if(A.getAreaState()!=Area.State.ACTIVE)
+					A.setAreaState(Area.State.ACTIVE);
+			}
+			if((recordedChanges!=null)&&(recordedChanges.length()>0))
+				mob.session().rawOut(recordedChanges.toString());
+			mob.session().println(_("done!"));
+		}
+		else
+		if(s.startsWith("clantick"))
+		{
+			mob.session().println(_("clantick: tick clans"));
+			CMLib.clans().tickAllClans();
+			mob.session().println(_("clantick: clans tick"));
+			CMLib.clans().forceTick();
+			mob.session().println(_("clantick: done!"));
+		}
+		else
+		if(s.equalsIgnoreCase("VISITATION"))
+		{
+			try
+			{
+				if(commands.size()>1) s=(String)commands.elementAt(1);
+				boolean area=false;
+				if(s.equalsIgnoreCase("AREA"))
+				{
+					area=true;
+					if(commands.size()>2) s=(String)commands.elementAt(2);
+				}
+				final MOB M=CMLib.players().getLoadPlayer(s);
+				if((M!=null)&&(M.playerStats()!=null))
+				{
+					if(area)
+						M.playerStats().unVisit(M.location().getArea());
+					else
+						M.playerStats().unVisit(M.location());
+				}
+			}catch(final NoSuchElementException nse){}
+		}
+		else
+		if(s.equalsIgnoreCase("arearacemat")&&(CMSecurity.isASysOp(mob)))
+		{
+			// this is just utility code and will change frequently
+			final Area A=mob.location().getArea();
+			CMLib.map().resetArea(A);
+			A.setAreaState(Area.State.FROZEN);
+			final Hashtable rememberI=new Hashtable();
+			final Hashtable rememberM=new Hashtable();
+			try
+			{
+			for(final Enumeration r=A.getCompleteMap();r.hasMoreElements();)
+			{
+				Room R=(Room)r.nextElement();
+				if(R.roomID().length()>0)
+				synchronized(("SYNC"+R.roomID()).intern())
+				{
+					R=CMLib.map().getRoom(R);
+					CMLib.map().resetRoom(R, true);
+					boolean somethingDone=false;
+					mob.tell(R.roomID()+"/"+R.name()+"/"+R.displayText()+"--------------------");
+					for(int i=R.numItems()-1;i>=0;i--)
+					{
+						final Item I=R.getItem(i);
+						if(I.ID().equalsIgnoreCase("GenWallpaper")) continue;
+						final int returned=resetAreaOramaManaI(mob,I,rememberI," ");
+						if(returned<0)
+						{
+							R.delItem(I);
+							somethingDone=true;
+							mob.tell(_(" deleted"));
+						}
+						else
+						if(returned>0)
+							somethingDone=true;
+					}
+					if(somethingDone)
+						CMLib.database().DBUpdateItems(R);
+					somethingDone=false;
+					for(int m=0;m<R.numInhabitants();m++)
+					{
+						final MOB M=R.fetchInhabitant(m);
+						if(M==mob) continue;
+						if(!M.isSavable()) continue;
+						Race R2=(Race)rememberM.get(M.Name());
+						if(R2!=null)
+						{
+							if(M.charStats().getMyRace()==R2)
+								mob.tell(_(" @x1 still @x2",M.Name(),R2.name()));
+							else
+							{
+								M.baseCharStats().setMyRace(R2);
+								R2.setHeightWeight(M.basePhyStats(),(char)M.baseCharStats().getStat(CharStats.STAT_GENDER));
+								M.recoverCharStats();
+								M.recoverPhyStats();
+								mob.tell(_(" @x1 Changed to @x2",M.Name(),R2.ID()));
+								somethingDone=true;
+							}
+						}
+						else
+						while(true)
+						{
+							final String str=mob.session().prompt(" "+M.Name()+"/"+M.charStats().getMyRace().ID(),"");
+							if(str.length()==0)
+							{
+								rememberM.put(M.name(),M.baseCharStats().getMyRace());
+								break;
+							}
+							if(str.equals("?"))
+								mob.tell(M.Name()+"/"+M.displayText()+"/"+M.description());
+							else
+							{
+								R2=CMClass.getRace(str);
+								if(R2==null)
+								{
+									String poss="";
+									if(poss.length()==0)
+									for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+									{
+										final Race R3=(Race)e.nextElement();
+										if(R3.ID().toUpperCase().startsWith(str.toUpperCase()))
+										   poss=R3.name();
+									}
+									if(poss.length()==0)
+									for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+									{
+										final Race R3=(Race)e.nextElement();
+										if(R3.ID().toUpperCase().indexOf(str.toUpperCase())>=0)
+										   poss=R3.name();
+									}
+									if(poss.length()==0)
+									for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+									{
+										final Race R3=(Race)e.nextElement();
+										if(R3.name().toUpperCase().startsWith(str.toUpperCase()))
+										   poss=R3.name();
+									}
+									if(poss.length()==0)
+									for(final Enumeration e=CMClass.races();e.hasMoreElements();)
+									{
+										final Race R3=(Race)e.nextElement();
+										if(R3.name().toUpperCase().indexOf(str.toUpperCase())>=0)
+										   poss=R3.name();
+									}
+									mob.tell(_(" '@x1' is not a valid race.  Try '@x2'.",str,poss));
+									continue;
+								}
+								mob.tell(_(" Changed to @x1",R2.ID()));
+								M.baseCharStats().setMyRace(R2);
+								R2.setHeightWeight(M.basePhyStats(),(char)M.baseCharStats().getStat(CharStats.STAT_GENDER));
+								M.recoverCharStats();
+								M.recoverPhyStats();
+								rememberM.put(M.name(),M.baseCharStats().getMyRace());
+								somethingDone=true;
+								break;
+							}
+						}
+						for(int i=M.numItems()-1;i>=0;i--)
+						{
+							final Item I=M.getItem(i);
+							final int returned=resetAreaOramaManaI(mob,I,rememberI,"   ");
+							if(returned<0)
+							{
+								M.delItem(I);
+								somethingDone=true;
+								mob.tell(_("   deleted"));
+							}
+							else
+							if(returned>0)
+								somethingDone=true;
+						}
+						final ShopKeeper SK=CMLib.coffeeShops().getShopKeeper(M);
+						if(SK!=null)
+						{
+							for(final Iterator<Environmental> i=SK.getShop().getStoreInventory();i.hasNext();)
+							{
+								final Environmental E=i.next();
+								if(E instanceof Item)
+								{
+									final Item I=(Item)E;
+									final int returned=resetAreaOramaManaI(mob,I,rememberI," - ");
+									if(returned<0)
+									{
+										SK.getShop().delAllStoreInventory(I);
+										somethingDone=true;
+										mob.tell(_("   deleted"));
+									}
+									else
+									if(returned>0)
+									{
+										somethingDone=true;
+										final int numInStock=SK.getShop().numberInStock(I);
+										final int stockPrice=SK.getShop().stockPrice(I);
+										SK.getShop().delAllStoreInventory(I);
+										SK.getShop().addStoreInventory(I,numInStock,stockPrice);
+									}
+								}
+							}
+						}
+						if(M.fetchAbility("Chopping")!=null)
+						{
+							somethingDone=true;
+							M.delAbility(M.fetchAbility("Chopping"));
+						}
+						for(final Enumeration<Behavior> e=M.behaviors();e.hasMoreElements();)
+						{
+							final Behavior B=e.nextElement();
+							if((B.ID().equalsIgnoreCase("Mobile"))
+							&&(B.getParms().trim().length()>0))
+							{
+								somethingDone=true;
+								B.setParms("");
+							}
+						}
+					}
+					if(somethingDone)
+						CMLib.database().DBUpdateMOBs(R);
+				}
+			}
+			}
+			catch(final java.io.IOException e){}
+			if(A.getAreaState()!=Area.State.ACTIVE)
+				A.setAreaState(Area.State.ACTIVE);
+			mob.tell(_("Done."));
+		}
+		else
+		if(s.equalsIgnoreCase("manufacturers"))
+		{
+			TechType[] types;
+			String[] names;
+			final List<Manufacturer> m=new XVector<Manufacturer>(CMLib.tech().manufacterers());
+			for(final Manufacturer M : m)
+				CMLib.tech().delManufacturer(M);
+			types=new TechType[]{TechType.SHIP_SOFTWARE};
+			names=new String[]{
+			"Nanoapp",
+			"ExaSoft",
+			"Cryptosoft",
+			"M.S. Corp",
+			"AmLogic",
+			"InnovaSoft",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_COMPUTER};
+			names=new String[]{
+			"IniProc",
+			"picoSystems",
+			"cybProc",
+			"GuthrieTronics",
+			"SolidCorp",
+			"DelCorp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_SPACESHIP};
+			names=new String[]{
+			"AtomiCorp",
+			"FrontierCorp",
+			"Vargas",
+			"JarviSys",
+			"Solar Corp",
+			"DynamiCorp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_ENGINE};
+			names=new String[]{
+			"Aczev Ltd",
+			"ItsukCorp",
+			"E.B.H. Ltd",
+			"Globomotors",
+			"Bowers Eng.",
+			"DynamiDrive",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_SENSOR};
+			names=new String[]{
+			"BunovaCorp",
+			"Censys",
+			"Dering-Hao",
+			"ProgressTek",
+			"NetCorp",
+			"McNeil Ltd",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_DAMPENER};
+			names=new String[]{
+			"S.H. Ltd",
+			"Malik-Ni",
+			"HsuiCorp",
+			"RiddleCorp",
+			"TotCorp",
+			"Apex Ltd",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_ENVIRO_CONTROL};
+			names=new String[]{
+			"YehCorp",
+			"A.O.P. Ltd",
+			"Callahan",
+			"Innovatak",
+			"SharpeyTek",
+			"Holtz-Derkova",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_POWER};
+			names=new String[]{
+			"Optcel",
+			"Shinacells",
+			"Choe Corp",
+			"hyDat Ltd",
+			"LumoDigital",
+			"Li-Lai Ltd",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_WEAPON};
+			names=new String[]{
+			"A.S.U. Ltd",
+			"Mi-Gievora",
+			"A.T.F. Corp",
+			"Paragon Systems",
+			"Physionetics",
+			"DestructoCorp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_SHIELD};
+			names=new String[]{
+			"Lee-Lavanchy",
+			"Hsaio GmbH",
+			"Kikko-Thoran",
+			"LarsonTek",
+			"ElectriCorp",
+			"Grant DefCorp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.SHIP_SHIELD,TechType.SHIP_WEAPON};
+			names=new String[]{
+			"Hsaio",
+			"Toy-Miyazu",
+			"Minova",
+			"DiversiCorp",
+			"Unidynamics",
+			"Nucleomatic",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.ANY};
+			names=new String[]{
+			"enTek",
+			"triNet",
+			"ReadyTek",
+			"GenTech",
+			"GeneralCorp",
+			"A.C.M.E.",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.PERSONAL_WEAPON};
+			names=new String[]{
+			"Chu",
+			"Asan",
+			"Noda",
+			"Ocano",
+			"PhaseCorp",
+			"Chao-Itsuk",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.PERSONAL_SHIELD};
+			names=new String[]{
+			"Xiu-Nova",
+			"I.B.B. Ltd",
+			"M.O.B. Corp",
+			"BoltonTek",
+			"Maddox",
+			"Digital Defense Corp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.PERSONAL_SENSOR};
+			names=new String[]{
+			"cenApp",
+			"virGenCorp",
+			"Umin-Kahi Ltd",
+			"Tyrrell",
+			"ArcrSys",
+			"Tsaka Corp",
+			};
+			makeManufacturer(names, types);
+			types=new TechType[]{TechType.PERSONAL_WEAPON,TechType.PERSONAL_SENSOR,TechType.PERSONAL_SHIELD};
+			names=new String[]{
+			"MilSec",
+			"A.O.H. Corp",
+			"GenScience",
+			"PersoTek",
+			"StrateTek",
+			"Maynard",
+			};
+		}
+		else
+			mob.tell(_("'@x1' is an unknown reset.  Try ROOM, AREA, MOBSTATS ROOM, MOBSTATS AREA *, MOBSTATS WORLD *, MOBSTATS CATALOG *, ITEMSTATS ROOM, ITEMSTATS AREA *, ITEMSTATS WORLD *, ITEMSTATS CATALOG *, AREARACEMAT *, AREAROOMIDS *, AREAINSTALL.\n\r * = Reset functions which may take a long time to complete.",s));
+		return false;
+	}
+
+}

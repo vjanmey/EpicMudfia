@@ -1,0 +1,13 @@
+ONCE_PROG
+	mpsetvar $a HAS_CHICKEN FALSE
+~
+
+GREET_PROG 100
+	if var($a HAS_CHICKEN == FALSE)
+		mpecho A voice echoes, '$n is the winrar winrar chicken dinrar!'
+		mpsetvar $a HAS_CHICKEN TRUE
+	else
+		mpecho A voice echoes, 'Sorry, $n, but you are not the winrar winrar chicken dinrar!'
+		mpsetvar $a HAS_CHICKEN FALSE
+	endif
+~

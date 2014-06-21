@@ -1,0 +1,279 @@
+20140425.2327.04 info  MUD            CoffeeMud v5.8.1.1
+20140425.2327.04 info  MUD            (C) 2000-2014 Bo Zimmerman
+20140425.2327.04 info  MUD            http://www.coffeemud.org
+20140425.2327.04 info  HOST0          Disabled subsystems: COMMAND_POSE, QUITREASON, RETIREREASON
+20140425.2327.04 info  MUD@5555       MUD Server started on port: 5555
+20140425.2327.05 info  HOST0          Connected to jdbc:mysql://localhost/coffeemud
+20140425.2327.06 debug HOST0          SSL not configured.
+20140425.2327.06 debug HOST0          SSL not configured.
+20140425.2327.06 error SMTP           Set your coffeemud.ini parameter: DOMAIN
+20140425.2327.06 info  mweb-pub0      Started http pub0 on port 27744
+20140425.2327.06 error mweb-pub0      Port 80: Address already in use: bind
+20140425.2327.06 info  mweb-admin0    Started http admin0 on port 27777
+20140425.2327.06 debug mweb-pub0Timeo Timeout Thread started
+20140425.2327.06 debug mweb-admin0Tim Timeout Thread started
+20140425.2327.13 info  HOST0          WebMacros loaded  : 170
+20140425.2327.14 info  HOST0          Races loaded      : 171
+20140425.2327.15 info  HOST0          Classes loaded    : 48
+20140425.2327.17 info  HOST0          MOB Types loaded  : 104
+20140425.2327.17 info  HOST0          Exit Types loaded : 27
+20140425.2327.18 info  HOST0          Area Types loaded : 10
+20140425.2327.19 info  HOST0          Locales loaded    : 97
+20140425.2327.20 info  HOST0          Fighter Skills    : 116
+20140425.2327.21 info  HOST0          Chants loaded     : 248
+20140425.2327.21 info  HOST0          Languages loaded  : 19
+20140425.2327.22 info  HOST0          Properties loaded : 218
+20140425.2327.23 info  HOST0          Prayers loaded    : 242
+20140425.2327.25 info  HOST0          Skills loaded     : 270
+20140425.2327.25 info  HOST0          Songs loaded      : 140
+20140425.2327.26 info  HOST0          Spells loaded     : 341
+20140425.2327.26 info  HOST0          Heroics loaded    : 6
+20140425.2327.27 info  HOST0          Tech Skills loaded: 2
+20140425.2327.27 info  HOST0          Traps loaded      : 75
+20140425.2327.28 info  HOST0          Basic Items loaded: 95
+20140425.2327.29 info  HOST0          Weapons loaded    : 57
+20140425.2327.29 info  HOST0          Armor loaded      : 47
+20140425.2327.29 info  HOST0          Magic Items loaded: 41
+20140425.2327.30 info  HOST0          Clan Items loaded : 19
+20140425.2327.31 info  HOST0          Electronics loaded: 52
+20140425.2327.31 info  HOST0          Behaviors loaded  : 94
+20140425.2327.34 info  HOST0          Commands loaded   : 266
+20140425.2327.36 info  HOST0          Expertises defined: 1428
+20140425.2327.36 info  HOST0          Channels loaded   : 20
+20140425.2327.36 info  HOST0          Socials loaded    : 308
+20140425.2327.36 info  HOST0          Clans loaded      : 0
+20140425.2327.36 info  CM1Server0@277 Started CM1Server0@27733 on port 27733
+20140425.2327.36 info  I3Server       InterMud3 Core (c)1996 George Reese
+20140425.2327.37 error Intermud       Please set ADMINEMAIL in your coffeemud.ini file.
+20140425.2327.37 info  Intermud3      I3 client connection: 204.209.44.3@8080
+20140425.2327.37 info  I3Server       InterMud3 Server started on port 27766
+20140425.2327.37 info  HOST0          Loading catalog...
+20140425.2327.37 info  HOST0          Loading map...
+20140425.2327.37 info  HOST0          Preparing map...
+20140425.2327.37 info  HOST0          Mapped rooms      : 0 in 0 areas
+20140425.2327.37 info  HOST0          NO MAPPED ROOM?!  I'll make ya one!
+20140425.2327.38 info  HOST0          Services and utilities started
+20140425.2327.38 info  HOST0          Host#0 initializated.
+20140425.2327.38 info  MUD            Initialization complete.
+20140426.0011.40 info  Worker0#5      Connection from 127.0.0.1
+20140426.0011.51 info  Worker0#3      Creating user: Vic
+20140426.0015.23 info  Worker0#5      Created user: Vic
+20140426.0015.23 info  Worker0#5      127.0.0.1 mushclient MXP CMP ANSI, character login: Vic
+20140426.0133.37 error I3SaveTick     No I3 response received in 1 hour(s), 1 minute(s), 11 second(s), 677 milliseconds. Connected=true
+20140426.0133.37 info  Intermud       Shutdown!!!
+20140426.0133.38 info  I3Server       InterMud3 Core (c)1996 George Reese
+20140426.0133.38 error Intermud       Please set ADMINEMAIL in your coffeemud.ini file.
+20140426.0133.59 error Intermud       204.209.44.3: 8080: Connection timed out: connect
+20140426.0133.59 info  I3Server       InterMud3 Server started on port 27766
+20140426.0133.59 error I3SaveTick     Restarted your Intermud system.  To stop receiving these messages, DISABLE the I3 system.
+20140426.1103.28 error THSessions0    KILLING DEAD Session: Vic (START), out for 9h 51m 36s 362ms
+20140426.1103.35 error THSessions0    STATUS  was :MAINLOOP, LASTCMD was :[read, book]
+20140426.1103.40 info  Worker0#2      Logout: Vic (11h)
+20140426.1103.40 error Journal        Communications link failure
+
+The last packet successfully received from the server was 31,853,420 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
+com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure
+
+The last packet successfully received from the server was 31,853,420 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:409)
+	at com.mysql.jdbc.SQLError.createCommunicationsException(SQLError.java:1127)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3715)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3604)
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:4155)
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2615)
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2776)
+	at com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2832)
+	at com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2781)
+	at com.mysql.jdbc.StatementImpl.executeQuery(StatementImpl.java:1569)
+	at com.planet_ink.coffee_mud.core.database.DBConnection.query(DBConnection.java:401)
+	at com.planet_ink.coffee_mud.core.database.JournalLoader.DBReadJournalMsgs(JournalLoader.java:406)
+	at com.planet_ink.coffee_mud.core.database.DBInterface.DBReadJournalMsgs(DBInterface.java:253)
+	at com.planet_ink.coffee_mud.Libraries.CMJournals.expirationJournalSweep(CMJournals.java:304)
+	at com.planet_ink.coffee_mud.Libraries.CMJournals.tick(CMJournals.java:376)
+	at com.planet_ink.coffee_mud.core.threads.StdTickClient.tickTicker(StdTickClient.java:123)
+	at com.planet_ink.coffee_mud.core.threads.StdTickGroup.run(StdTickGroup.java:262)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.net.SocketException: Software caused connection abort: recv failed
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:152)
+	at java.net.SocketInputStream.read(SocketInputStream.java:122)
+	at com.mysql.jdbc.util.ReadAheadInputStream.fill(ReadAheadInputStream.java:112)
+	at com.mysql.jdbc.util.ReadAheadInputStream.readFromUnderlyingStreamIfNecessary(ReadAheadInputStream.java:159)
+	at com.mysql.jdbc.util.ReadAheadInputStream.read(ReadAheadInputStream.java:187)
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:3158)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3615)
+	... 17 more
+20140426.1103.43 info  Worker0#2      Disconnect: Vic: 127.0.0.1 (11h)
+20140426.1104.15 error I3SaveTick     No I3 response received in 10 hour(s), 31 minute(s), 38 second(s), 979 milliseconds. Connected=false
+20140426.1104.16 info  I3Server       InterMud3 Core (c)1996 George Reese
+20140426.1104.16 error Intermud       Please set ADMINEMAIL in your coffeemud.ini file.
+20140426.1104.16 info  Intermud3      I3 client connection: 204.209.44.3@8080
+20140426.1104.16 info  I3Server       InterMud3 Server started on port 27766
+20140426.1104.16 error I3SaveTick     Restarted your Intermud system.  To stop receiving these messages, DISABLE the I3 system.
+20140426.1340.53 info  Grinder        Vic added area MafiaTest1
+20140426.1340.54 error StdArea        Unable to random-find: null
+20140426.1342.35 info  Worker0#1      Connection from 127.0.0.1
+20140426.1342.45 info  Worker0#5      127.0.0.1 mushclient MXP CMP ANSI, character login: Vic
+20140426.1346.29 info  Rooms          Vic created room MafiaTest1#1000.
+20140426.1351.22 info  Rooms          Vic modified room MafiaTest1#0.
+20140426.1352.46 info  Rooms          Vic modified room MafiaTest1#1000.
+20140426.1358.33 info  Rooms          Vic created room MafiaTest1#1.
+20140426.1358.36 info  Rooms          Vic created room MafiaTest1#1001.
+20140426.1459.23 info  Rooms          Vic modified room MafiaTest1#1.
+20140426.1459.44 info  Rooms          Vic modified room MafiaTest1#1001.
+20140426.1459.55 info  Rooms          Vic created room MafiaTest1#2001.
+20140426.1500.19 info  Rooms          Vic modified room MafiaTest1#2001.
+20140426.1500.25 info  Rooms          Vic created room MafiaTest1#2000.
+20140426.1500.43 info  Rooms          Vic modified room MafiaTest1#2000.
+20140426.1501.14 info  Rooms          Vic created room MafiaTest1#2.
+20140426.1501.30 info  Rooms          Vic modified room MafiaTest1#2.
+20140426.1502.06 info  Link           Vic linked MafiaTest1#2 to room MafiaTest1#2000.
+20140426.1504.50 info  Rooms          Vic unlinked direction West from room MafiaTest1#1000.
+20140426.1505.03 info  Rooms          Vic unlinked direction West from room MafiaTest1#2.
+20140426.1505.12 info  Rooms          Vic unlinked direction West from room MafiaTest1#2001.
+20140426.1509.28 info  Exits          MafiaTest1#0 exits changed by Vic.
+20140426.1516.40 info  CreateEdit     Vic modified exit Door.
+20140426.1519.17 info  Exits          MafiaTest1#0 exits destroyed by Vic.
+20140426.1519.27 info  Exits          MafiaTest1#0 exits destroyed by Vic.
+20140426.1520.00 info  Link           Vic linked MafiaTest1#0 to room MafiaTest1#1000.
+20140426.1520.19 info  Rooms          Vic unlinked direction West from room MafiaTest1#1000.
+20140426.1521.39 info  Rooms          Vic unlinked direction East from room MafiaTest1#0.
+20140426.1521.47 info  Exits          MafiaTest1#0 exits changed by Vic.
+20140426.1534.27 info  CreateEdit     Vic modified exit GenDoor.
+20140426.1534.27 error CMFile         Access error on file 'resources/progs/starting.script'.
+20140426.1858.56 info  CreateEdit     Vic modified exit GenDoor.
+20140426.1909.56 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1909.56 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1909.56 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1909.56 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1910.07 error Scripting      The Door of TRUTH//IF/Syntax/ Without ENDIF!
+20140426.1911.16 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1911.16 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1911.16 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1911.16 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1915.19 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1915.19 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1915.19 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1915.19 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1916.22 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1916.22 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1916.22 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1916.22 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1919.28 info  Exits          MafiaTest1#1 exits changed by Vic.
+20140426.1924.58 info  CreateEdit     Vic modified exit GenDoor.
+20140426.1924.58 error CMFile         Access error on file 'resources/progs/pathdoor.script'.
+20140426.1928.09 info  Exits          MafiaTest1#1001 exits changed by Vic.
+20140426.1930.25 info  CreateEdit     Vic modified exit GenDoor.
+20140426.1930.57 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1930.57 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1930.57 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1930.57 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1934.55 info  Link           Vic linked MafiaTest1#2000 to room MafiaTest1#0.
+20140426.1935.06 info  Rooms          Vic unlinked direction West from room MafiaTest1#0.
+20140426.1935.36 info  Rooms          Vic unlinked direction North from room MafiaTest1#2000.
+20140426.1935.38 info  Rooms          Vic unlinked direction South from room MafiaTest1#2000.
+20140426.1937.22 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1937.22 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1937.22 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1937.22 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1938.29 info  CreateEdit     Vic modified exit GenDoor.
+20140426.1938.53 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1938.53 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1938.53 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1938.53 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1939.51 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.1939.51 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.1939.51 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.1939.51 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.1942.01 info  CreateEdit     Vic modified exit GenDoor.
+20140426.2004.23 error CMFile         Access error on file 'resources/progs/chickendinner.script'.
+20140426.2004.23 info  Rooms          Vic modified room MafiaTest1#2000.
+20140426.2037.08 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2037.08 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2037.08 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2037.08 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2037.11 error Scripting      the room/MafiaTest1#2000/IF/Syntax/Unknown character at: $:  $0 == NO_CHICKEN
+20140426.2038.35 error Scripting      the room/MafiaTest1#2000/IF/Syntax/Unknown character at: $:  $0 == NO_CHICKEN
+20140426.2039.55 info  Rooms          Vic modified room MafiaTest1#2000.
+20140426.2041.07 error Scripting      the room/MafiaTest1#2000/IF/Syntax/Unknown character at: $:  $0 == NO_CHICKEN
+20140426.2103.31 error THSessions0    Suspect Session: Vic (MafiaTest1#2000), out for 23m 27s 186ms
+20140426.2103.31 error THSessions0    STATUS  is :MAINLOOP, LASTCMD was :[modify, room]
+20140426.2104.43 info  Rooms          Vic modified room MafiaTest1#2000.
+20140426.2104.47 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2104.47 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2104.47 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2104.47 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2110.30 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2110.30 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2110.30 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2110.30 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2141.09 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2141.09 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2141.09 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2141.09 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2145.51 info  Rooms          Vic unlinked direction East from room MafiaTest1#1.
+20140426.2145.51 info  Exits          MafiaTest1#1 exits destroyed by Vic.
+20140426.2146.57 info  Exits          MafiaTest1#1 exits changed by Vic.
+20140426.2147.11 info  Rooms          Vic created room MafiaTest1#3.
+20140426.2147.31 info  Rooms          Vic unlinked direction West from room MafiaTest1#3.
+20140426.2147.44 info  Link           Vic linked MafiaTest1#3 to room MafiaTest1#2000.
+20140426.2148.31 info  Rooms          Vic modified room MafiaTest1#3.
+20140426.2148.52 info  Rooms          Vic unlinked direction North from room MafiaTest1#2000.
+20140426.2149.23 info  Rooms          Vic unlinked direction East from room MafiaTest1#1001.
+20140426.2149.30 info  Exits          MafiaTest1#1001 exits changed by Vic.
+20140426.2149.39 info  Link           Vic linked MafiaTest1#1001 to room MafiaTest1#1001.
+20140426.2149.52 info  Rooms          Vic unlinked direction West from room MafiaTest1#1001.
+20140426.2149.58 info  Rooms          Vic unlinked direction East from room MafiaTest1#1001.
+20140426.2150.21 info  Exits          MafiaTest1#2001 exits changed by Vic.
+20140426.2150.30 info  Link           Vic linked MafiaTest1#2001 to room MafiaTest1#1001.
+20140426.2150.38 info  Rooms          Vic unlinked direction West from room MafiaTest1#2001.
+20140426.2151.40 info  CreateEdit     Vic modified exit GenDoor.
+20140426.2152.35 info  CreateEdit     Vic modified exit GenDoor.
+20140426.2154.11 info  Exits          MafiaTest1#3 exits destroyed by Vic.
+20140426.2154.20 info  Exits          MafiaTest1#1 exits destroyed by Vic.
+20140426.2155.03 info  Exits          MafiaTest1#1 exits changed by Vic.
+20140426.2155.33 info  CreateEdit     Vic modified exit GenDoor.
+20140426.2156.51 info  Link           Vic linked MafiaTest1#0 to room MafiaTest1#1000.
+20140426.2157.05 info  Rooms          Vic unlinked direction West from room MafiaTest1#1000.
+20140426.2157.53 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2157.53 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2157.53 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2157.53 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2159.15 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140426.2159.15 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140426.2159.15 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140426.2159.15 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140426.2209.10 error CommandProcess Vic starts system shutdown...
+20140426.2209.10 info  Shutdown0      New Connections are now closed
+20140426.2209.10 info  ServiceEngine  Scheduler stopped
+20140426.2209.11 info  Shutdown0      All users saved.
+20140426.2209.11 info  Shutdown0      Stats saved.
+20140426.2209.11 info  Shutdown0      Notifying all objects of shutdown...
+20140426.2209.12 info  CM1Server      Shutdown complete
+20140426.2209.14 info  Shutdown0      CM1Server0@27733 stopped
+20140426.2209.14 info  Intermud       Shutdown!!!
+20140426.2209.14 info  Shutdown0      I3Server stopped
+20140426.2209.17 info  Shutdown0      All users logged off.
+20140426.2209.17 info  SMTP           Shutting down.
+20140426.2209.19 info  Shutdown0      SMTP Server stopped.
+20140426.2209.21 info  ServiceEngine  Shutdown complete.
+20140426.2209.21 info  Shutdown0      Map Threads Stopped.
+20140426.2209.21 info  Shutdown0      Resources Cleared.
+20140426.2209.21 info  Shutdown0      Database connections closed.
+20140426.2209.21 info  mweb-pub0      Shutdown complete
+20140426.2209.21 info  Shutdown0      Web server mweb-pub0 stopped.
+20140426.2209.21 info  mweb-admin0    Shutdown complete
+20140426.2209.21 info  Shutdown0      Web server mweb-admin0 stopped.
+20140426.2209.21 info  mweb-pub0Timeo Timeout Thread shutdown
+20140426.2209.21 info  mweb-admin0Tim Timeout Thread shutdown
+20140426.2209.21 info  Shutdown0      CoffeeMud shutdown complete.
+20140426.2209.22 info  Shutdown0      Logout: Vic (8h)
+20140426.2209.22 info  Shutdown0      Disconnect: Vic: 127.0.0.1 (8h)
+20140426.2209.23 info  MUD@5555       Server cleaning up.
+20140426.2209.23 info  MUD@5555       MUD on port 5555 stopped!

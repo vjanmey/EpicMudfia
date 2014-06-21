@@ -1,0 +1,8 @@
+CNCLMSG_PROG open all
+	if numpcsroom ( != 2)
+		mpecho A voice echoes, 'THERE MUST BE TWO, BUT THERE ARE $%NUMPCSROOM()%! THERE ARE $%NUMPCSAREA()% IN THE AREA DOE!'
+		return cancel
+	else
+		mpecho A voice echoes, 'YOU MAY PASS!'
+	endif
+~

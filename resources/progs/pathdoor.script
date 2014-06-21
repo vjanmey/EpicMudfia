@@ -1,0 +1,32 @@
+ONCE_PROG
+	mpsetvar $a HAS_BEEN_THROUGH FALSE
+~
+
+GREET_PROG 100
+	if var($a HAS_CHICKEN == FALSE)
+
+GREET_PROG 100
+	if numpcsroom ( > 1) and isopen($xE)
+		mpclose $xE
+		mpecho  The door slams shut!
+		mpecho A voice echoes, "NICE TRY!"
+	endif
+~
+	
+CNCLMSG_PROG open all
+	if numpcsroom ( != 1)
+		mpecho A voice echoes, 'THERE CAN ONLY BE ONE, BUT THERE ARE $%NUMPCSROOM()%!'
+		return cancel
+	else
+		mpecho A voice echoes, 'YOU MAY PASS!'
+	endif
+~
+
+EXIT_PROG 100
+	if isopen($xE)
+		mpclose $xE
+		mpecho  The door slams shut!
+		mpechoat $n A voice echoes, 'SO LONG, SUCKERESA!'
+	endif
+~
+		
