@@ -83,3 +83,20 @@
 20140621.1938.18 info  Items          Vic created item ManualArchon.
 20140621.1938.20 info  Worker0#1      Created user: Jocelyn
 20140621.1938.20 info  Worker0#1      98.202.159.56 mushclient MXP CMP ANSI, character login: Jocelyn
+20140621.2013.37 info  Worker0#3      Logout: Jocelyn (35m)
+20140621.2013.37 info  Worker0#3      Disconnect: Jocelyn: 98.202.159.56 (36m)
+20140621.2123.48 info  Worker0#3      Logout: Jeremy (2h 51m)
+20140621.2123.48 info  Worker0#3      Disconnect: Jeremy: 50.135.252.105 (2h 51m)
+20140621.2127.30 error CMProps        Error parsing coffeemud.ini 'COMMONCOST' has duplicate key:<EMPTY>
+20140621.2127.30 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:<EMPTY>
+20140621.2127.30 error CMProps        Error parsing coffeemud.ini 'SKILLCOST' has duplicate key:SKILL_WILDERNESSLORE
+20140621.2127.30 error CMProps        Error parsing coffeemud.ini 'LANGCOST' has duplicate key:<EMPTY>
+20140621.2128.14 error Scripting      the room/MafiaTest2#1006/IF/Syntax/ Without ENDIF!
+20140621.2129.00 info  Worker0#6      Connection from 50.135.252.105
+20140621.2129.13 info  Worker0#3      50.135.252.105 mushclient MXP CMP ANSI, character login: Jeremy
+20140621.2129.34 error Scripting      the room/MafiaTest2#1004/IF/Syntax/ Without ENDIF!
+20140621.2130.02 error Scripting      the room/MafiaTest2#1004/IF/Syntax/ Without ENDIF!
+20140621.2130.14 error Scripting      the room/MafiaTest2#1004/IF/Syntax/ Without ENDIF!
+20140621.2131.10 error Scripting      the room/MafiaTest2#4/IF/Syntax/ Without ENDIF!
+20140621.2132.42 error CMFile         Access error on file 'resources/progs/pathfoor.script'.
+20140621.2132.50 info  Rooms          Jeremy modified room MafiaTest2#4.

@@ -4,6 +4,7 @@ ONCE_PROG
 
 GREET_PROG 100
 	if var($a HAS_CHICKEN == FALSE)
+~
 
 GREET_PROG 100
 	if numpcsroom ( > 1) and isopen($xE)
