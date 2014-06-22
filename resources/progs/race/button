@@ -1,0 +1,11 @@
+ONCE_PROG
+	mpsetvar $a GAME_ON TRUE
+	mpsetvar $a WINNER FALSE
+~
+
+CNCLMSG_PROG PUSH 
+		mpecho A voice echoes, 'The game restarts...'
+		mpsetvar $a GAME_ON TRUE
+		mpsetvar $a WINNER FALSE
+		RETURN CANCEL
+~

@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/js.jar"/>
 	<classpathentry kind="lib" path="lib/jzlib.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vic/workspace/MafiaGame/lib/js.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vic/workspace/MafiaGame/lib/jzlib.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/mysql-5.6.19-winx64/mysql-connector-java-5.1.31/mysql-connector-java-5.1.31-bin.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

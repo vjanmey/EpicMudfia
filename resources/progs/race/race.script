@@ -1,0 +1,17 @@
+ONCE_PROG
+	mpsetvar $a GAME_ON TRUE
+	mpsetvar $a WINNER FALSE
+~
+
+GREET_PROG 100
+	if var($a GAME_ON == TRUE) and var($a WINNER == FALSE )
+		mpecho A voice echoes, '$n wins!'
+		mpsetvar $a WINNER TRUE
+	else 
+		if var($a GAME_ON == TRUE )
+			mpecho A voice echoes, 'Sorry, $n, you lose lol'
+    	else
+        	mpecho what do you want, lol?
+        endif
+	endif
+~
