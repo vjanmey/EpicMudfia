@@ -11,7 +11,7 @@ GREET_PROG 100
 		if var($a GAME_ON == TRUE )
 			mpecho A voice echoes, 'Sorry, $n, you lose lol'
     	else
-        	mpecho what do you want, lol?
+        	mpecho what do you want, loljk?
         endif
 	endif
 ~
