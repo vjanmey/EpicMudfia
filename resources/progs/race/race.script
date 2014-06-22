@@ -1,4 +1,4 @@
-ONCE_PROG
+ONCE_PROG 
 	mpsetvar $a GAME_ON TRUE
 	mpsetvar $a WINNER FALSE
 ~
